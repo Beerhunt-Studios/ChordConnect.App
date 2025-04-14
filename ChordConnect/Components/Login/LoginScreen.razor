@@ -1,0 +1,23 @@
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="flex h-full w-full flex-col content-center items-center justify-center">
+    <div class="text-center text-4xl font-bold">
+        🎵 ChordConnect 🎵
+    </div>
+    <div class="pt-3">
+        Willkommen bei Chord-Connect. Der Plattform bei der du dich mit anderen Künstlern verbinden kannst!
+    </div>
+
+    <button class="outline-1 p-2" @onclick="Login">
+        Login
+    </button>
+</div>
+
+@code {
+
+    public async Task Login()
+    {
+        await ((Auth0AuthenticationStateProvider)AuthenticationStateProvider)
+            .LogInAsync();
+    }
+}

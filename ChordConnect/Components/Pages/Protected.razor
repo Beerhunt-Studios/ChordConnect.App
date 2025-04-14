@@ -1,0 +1,20 @@
+﻿@page "/protected"
+@using ChordConnect.Api
+@attribute [Authorize]
+@inject ChordAPI api
+
+
+<h3>Protected</h3>
+
+<p>Has user is: @hasUser</p>
+
+
+
+@code {
+    private bool hasUser = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hasUser = await api.User.HasProfileAsync();
+    }
+}

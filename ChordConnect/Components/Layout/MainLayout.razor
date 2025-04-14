@@ -1,0 +1,26 @@
+﻿@using ChordConnect.Components.Login
+@inherits LayoutComponentBase
+
+<MudThemeProvider/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<AuthorizeView>
+    <NotAuthorized>
+        <LoginScreen />
+    </NotAuthorized>
+    <Authorizing>
+        <MudProgressCircular Color="Color.Primary" Size="@Size.Large" Indeterminate="true"/>
+    </Authorizing>
+    <Authorized>
+        <MudLayout>
+            <MudMainContent>
+                @Body
+            </MudMainContent>
+            <MudAppBar Bottom="true" Dense="true" >
+                <NavMenu />
+            </MudAppBar>
+        </MudLayout>
+    </Authorized>
+</AuthorizeView>

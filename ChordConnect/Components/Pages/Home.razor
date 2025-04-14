@@ -1,0 +1,21 @@
+﻿@page "/"
+@using ChordConnect.Api
+@attribute [Authorize]
+@inject ChordAPI chordAPI
+@inject NavigationManager navManager
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        bool hasProfile = await chordAPI.User.HasProfileAsync();
+
+        if (hasProfile)
+        {
+            navManager.NavigateTo("/profile");
+            return;
+        }
+
+        navManager.NavigateTo("/createprofile");
+        return;
+    }
+}
