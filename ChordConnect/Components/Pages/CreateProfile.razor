@@ -1,6 +1,212 @@
 ﻿@page "/createprofile"
-<h3>CreateProfile</h3>
+
+@using FluentValidation
+@using MudBlazor
+@using System.IO
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+
+<style>
+    /* CSS-Import innerhalb des Style-Tags */
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@@400;500;600&family=Quicksand:wght@@400;500;600&display=swap');
+
+    * {
+        font-family: 'Quicksand', 'Inter', sans-serif;
+    }
+
+    .button-animated {
+        transition: transform 0.1s ease-in-out, box-shadow 0.2s;
+    }
+
+        .button-animated:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) inset;
+        }
+
+    .upload-text {
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+        color: #A9B9A5;
+    }
+
+    .profile-preview {
+        max-width: 200px;
+        border-radius: 12px;
+        margin-top: 10px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    }
+</style>
+
+<div style="width: 390px; height: 800px; background-color: #1E1E1E;">
+    <MudPaper Class="pa-6 rounded-xl mx-auto mt-10"
+              Style="max-width: 600px; background-color: #2A2A2A; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);">
+        <MudForm Model="@model" @ref="@form" Validation="@(orderValidator.ValidateValue)" ValidationDelay="0">
+            <MudCard Class="rounded-2xl"
+                     Style="background-color: #2A2A2A; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
+                <MudCardContent Class="d-flex flex-column gap-4">
+
+                    <MudText Typo="Typo.h5" Align="Align.Center" Style="color: #FFE9D6;">
+                        Erstelle dein Profil
+                    </MudText>
+
+                    <MudTextField @bind-Value="model.Artistname" Label="Künstlername"
+                                  Style="background-color: #3A3A3A; color: #FFE9D6;" />
+                    <MudTextField @bind-Value="model.Vorname" Label="Vorname"
+                                  Style="background-color: #3A3A3A; color: #FFE9D6;" />
+                    <MudTextField @bind-Value="model.Nachname" Label="Nachname"
+                                  Style="background-color: #3A3A3A; color: #FFE9D6;" />
+                    <MudTextField @bind-Value="model.Email" Label="Email"
+                                  Style="background-color: #3A3A3A; color: #FFE9D6;" />
+
+                    <MudSelect T="Gender" @bind-Value="model.Gender" Label="Geschlecht"
+                               OnChange="GenderChanged"
+                               Style="background-color: #3A3A3A; color: #FFE9D6;">
+                        <MudSelectItem Value="Gender.Männlich">Männlich</MudSelectItem>
+                        <MudSelectItem Value="Gender.Weiblich">Weiblich</MudSelectItem>
+                        <MudSelectItem Value="Gender.Divers">Divers</MudSelectItem>
+                    </MudSelect>
+
+                    <MudTextField @bind-Value="model.Age" Label="Alter"
+                                  Style="background-color: #3A3A3A; color: #FFE9D6;" />
+                    <MudTextField @bind-Value="model.Ort" Label="Ort"
+                                  Style="background-color: #3A3A3A; color: #FFE9D6;" />
+
+                    <input type="file" style="display:none;" @ref="fileInput" @onchange="HandleProfilePictureSelected" />
+
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Secondary"
+                               OnClick="TriggerFileUpload"
+                               Class="button-animated"
+                               Style="background-color: #D8A7B1; color: #1E1E1E;">
+                        📸 Profilbild hochladen
+                    </MudButton>
+
+                    @if (!string.IsNullOrEmpty(uploadedFileName))
+                    {
+                        <MudText Typo="Typo.body2" Class="upload-text">
+                            Hochgeladen: @uploadedFileName
+                        </MudText>
+                    }
+
+                    @if (!string.IsNullOrEmpty(profilePicturePreview))
+                    {
+                        <img src="@profilePicturePreview" alt="Profilbild Vorschau" class="profile-preview" />
+                    }
+
+                </MudCardContent>
+
+                <MudCardActions Class="justify-end pr-4 pb-4">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Secondary"
+                               OnClick="@(async () => await Submit())"
+                               Class="button-animated"
+                               Style="background-color: #D8A7B1; color: #1E1E1E;">
+                        Absenden
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudForm>
+    </MudPaper>
+</div>
 
 @code {
+    private MudForm form;
+    private OrderModel model = new OrderModel();
+    private OrderModelFluentValidator orderValidator = new OrderModelFluentValidator();
 
+    private ElementReference fileInput;
+    private string uploadedFileName;
+    private string profilePicturePreview;
+
+    public enum Gender
+    {
+        Männlich,
+        Weiblich,
+        Divers
+    }
+
+    public class OrderModel
+    {
+        public string Artistname { get; set; }
+        public string Vorname { get; set; }
+        public string Nachname { get; set; }
+        public string Email { get; set; }
+        public Gender Gender { get; set; }
+        public string Age { get; set; }
+        public string Ort { get; set; }
+        public string ProfilePicture { get; set; }
+    }
+
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            Snackbar.Add("Profil erfolgreich übermittelt!", MudBlazor.Severity.Success);
+        }
+    }
+
+    private async Task HandleProfilePictureSelected(ChangeEventArgs e)
+    {
+        var files = (e.Value as Microsoft.AspNetCore.Components.Forms.InputFileChangeEventArgs)?.GetMultipleFiles();
+        if (files != null && files.Count > 0)
+        {
+            var file = files[0];
+            uploadedFileName = file.Name;
+
+            using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            var bytes = memoryStream.ToArray();
+            profilePicturePreview = $"data:{file.ContentType};base64,{Convert.ToBase64String(bytes)}";
+
+            model.ProfilePicture = uploadedFileName;
+        }
+    }
+
+    private async Task TriggerFileUpload()
+    {
+        await JS.InvokeVoidAsync("eval", $"{fileInput}.click()");
+    }
+
+    private void GenderChanged(object value)
+    {
+        if ((Gender)value == Gender.Männlich)
+        {
+            model.Age = string.Empty;
+        }
+    }
+
+    public class OrderModelFluentValidator : AbstractValidator<OrderModel>
+    {
+        public OrderModelFluentValidator()
+        {
+            RuleFor(x => x.Artistname).NotEmpty().Length(1, 100);
+            RuleFor(x => x.Vorname).NotEmpty().Length(1, 100);
+            RuleFor(x => x.Nachname).NotEmpty().Length(1, 100);
+            RuleFor(x => x.Email).NotEmpty().EmailAddress()
+                .MustAsync(async (value, _) => await IsUniqueAsync(value));
+            RuleFor(x => x.Gender).IsInEnum();
+            RuleFor(x => x.Age)
+                .NotEmpty()
+                .Matches(@"^\d+$").WithMessage("Bitte ein gültiges Alter eingeben.")
+                .When(x => x.Gender != Gender.Männlich);
+            RuleFor(x => x.Ort).NotEmpty().Length(1, 100);
+            RuleFor(x => x.ProfilePicture).NotEmpty().WithMessage("Bitte ein Profilbild hochladen.");
+        }
+
+        private async Task<bool> IsUniqueAsync(string email)
+        {
+            await Task.Delay(300);
+            return email.ToLower() != "test@test.com";
+        }
+
+        public Func<object, string, Task<IEnumerable<string>>> ValidateValue =>
+            async (model, propertyName) =>
+            {
+                var result = await ValidateAsync(ValidationContext<OrderModel>.CreateWithOptions((OrderModel)model, x => x.IncludeProperties(propertyName)));
+                return result.IsValid ? Array.Empty<string>() : result.Errors.Select(e => e.ErrorMessage);
+            };
+    }
 }

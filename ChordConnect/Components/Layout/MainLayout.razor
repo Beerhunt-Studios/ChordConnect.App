@@ -24,3 +24,23 @@
         </MudLayout>
     </Authorized>
 </AuthorizeView>
+
+@code {
+    MudTheme MyCustomTheme = new MudTheme()
+        {
+            PaletteLight = new PaletteLight()
+            {
+                Background = Colors.Amber.Lighten4,
+            },
+            PaletteDark = new PaletteDark()
+            {
+                Background = Colors.Amber.Lighten4
+            },
+
+            LayoutProperties = new LayoutProperties()
+            {
+                DrawerWidthLeft = "260px",
+                DrawerWidthRight = "300px"
+            }
+        };
+}
