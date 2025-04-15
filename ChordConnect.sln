@@ -10,16 +10,21 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		DebugWithoutLogin|Any CPU = DebugWithoutLogin|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B4DF7075-79C6-409D-916B-275118CDB836}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B4DF7075-79C6-409D-916B-275118CDB836}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4DF7075-79C6-409D-916B-275118CDB836}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B4DF7075-79C6-409D-916B-275118CDB836}.DebugWithoutLogin|Any CPU.ActiveCfg = DebugWithoutLogin|Any CPU
+		{B4DF7075-79C6-409D-916B-275118CDB836}.DebugWithoutLogin|Any CPU.Build.0 = DebugWithoutLogin|Any CPU
 		{B4DF7075-79C6-409D-916B-275118CDB836}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4DF7075-79C6-409D-916B-275118CDB836}.Release|Any CPU.Build.0 = Release|Any CPU
 		{34DE9521-24B9-45B6-86B6-6CD97D431646}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{34DE9521-24B9-45B6-86B6-6CD97D431646}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34DE9521-24B9-45B6-86B6-6CD97D431646}.DebugWithoutLogin|Any CPU.ActiveCfg = DebugWithoutLogin|Any CPU
+		{34DE9521-24B9-45B6-86B6-6CD97D431646}.DebugWithoutLogin|Any CPU.Build.0 = DebugWithoutLogin|Any CPU
 		{34DE9521-24B9-45B6-86B6-6CD97D431646}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34DE9521-24B9-45B6-86B6-6CD97D431646}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

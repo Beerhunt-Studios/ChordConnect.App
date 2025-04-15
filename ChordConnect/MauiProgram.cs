@@ -34,7 +34,7 @@ namespace ChordConnect
                 Scope = "openid"
             }));
             builder.Services.AddScoped(x => {
-                return new ChordAPI("http://192.168.1.203", (x.GetRequiredService<AuthenticationStateProvider>() as Auth0AuthenticationStateProvider).AccessToken);
+                return new ChordAPI("https://local.chordconnect.k-meier.ch/", (x.GetRequiredService<AuthenticationStateProvider>() as Auth0AuthenticationStateProvider).AccessToken);
             });
             builder.Services
                 .AddAuthorizationCore()
