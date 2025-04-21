@@ -1,0 +1,155 @@
+﻿@page "/profile"
+
+@using MudBlazor
+@using System.IO
+@inject IJSRuntime JS
+
+<style>
+    /* CSS-Import innerhalb des Style-Tags */
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@@400;500;600&family=Quicksand:wght@@400;500;600&display=swap');
+
+    * {
+        font-family: 'Quicksand', 'Inter', sans-serif;
+    }
+
+    .button-animated {
+        transition: transform 0.1s ease-in-out, box-shadow 0.2s;
+    }
+
+    .button-animated:active {
+        transform: scale(0.97);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) inset;
+    }
+
+    .profile-preview {
+        max-width: 200px;
+        border-radius: 12px;
+        margin-top: 10px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    }
+
+    .form-row {
+        display: flex;
+        gap: 16px;
+        padding: 8px 0;
+    }
+
+    .form-row > * {
+        flex: 1;
+    }
+</style>
+
+<MudPaper Class="pa-6 rounded-xl mx-auto mt-10" Style="max-width: 600px; background-color: #2A2A2A; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);">
+    <MudCard Class="rounded-2xl" Style="background-color: #2A2A2A; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
+        <MudCardHeader>
+            <!-- Carousel für Profilbilder -->
+            <MudCarousel Class="mud-width-full" @ref="_carousel" ItemsSource="@model.ProfileImages" @bind-SelectedIndex="selectedIndex" Style="height:200px;" ShowArrows="@_arrows" ShowBullets="@_bullets" EnableSwipeGesture="@_enableSwipeGesture" AutoCycle="@_autocycle">
+            </MudCarousel>
+        </MudCardHeader>
+
+        <MudCardContent Class="d-flex flex-column gap-4">
+            <MudText Typo="Typo.h5" Align="Align.Center" Style="color: #FFE9D6;">
+                @model.ArtistName
+            </MudText>
+
+            <!-- Vorname & Nachname nebeneinander -->
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <MudText Typo="Typo.body1" Style="color: #FFE9D6;">@model.FirstName</MudText>
+                <MudText Typo="Typo.body1" Style="color: #FFE9D6;">@model.LastName</MudText>
+            </div>
+
+            <!-- Geschlecht in kleinerer Schriftgröße und grau -->
+            <MudText Typo="Typo.body2" Style="color: #B0B0B0; margin-top: 0.5rem;">
+                @GetGenderText(model.Gender)
+            </MudText>
+
+            <!-- Ort in originaler Schriftfarbe -->
+            <MudText Typo="Typo.body1" Style="color: #FFE9D6;">
+                @model.City
+            </MudText>
+
+            <!-- Rollen als Chips -->
+            <div style="margin-top: 1rem;">
+                <MudText Typo="Typo.body1" Style="font-weight: bold; color: #FFE9D6;">
+                    Rollen:
+                </MudText>
+                @foreach (var role in model.Roles.Split(','))
+                {
+                        <MudChip T="string" Variant="Variant.Outlined" Class="mr-2" Style="font-weight: bold;">
+                        @role.Trim()
+                        </MudChip>
+                }
+            </div>
+
+            <!-- Genre als Chips -->
+            <div style="margin-top: 1rem;">
+                <MudText Typo="Typo.body1" Style="font-weight: bold; color: #FFE9D6;">
+                    Genre:
+                </MudText>
+                @foreach (var genre in model.Genre.Split(','))
+                {
+                        <MudChip T="string" Variant="Variant.Outlined" Class="mr-2" Style="font-weight: bold;">
+                        @genre.Trim()
+                        </MudChip>
+                }
+            </div>
+        </MudCardContent>
+
+        <MudCardActions Class="justify-end pr-4 pb-4">
+            <MudButton OnClick="TriggerClick" Variant="Variant.Filled" Color="Color.Secondary" Class="button-animated" Style="background-color: #D8A7B1; color: #1E1E1E; border-radius: 12px 12px !important;">
+                Profil ändern
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudPaper>
+
+@code {
+    private MudCarousel<string> _carousel;
+    private bool _arrows = true;
+    private bool _bullets = true;
+    private bool _enableSwipeGesture = true;
+    private bool _autocycle = true;
+    private IList<string> _source = new List<string>();
+    private int selectedIndex = 0;
+
+    private Model model = new();
+
+    private async Task TriggerClick()
+    {
+        await JS.InvokeVoidAsync("eval", "alert('Change Profile clicked!');");
+    }
+
+    private string GetGenderText(Gender gender) => gender switch
+    {
+        Gender.Male => "Männlich",
+        Gender.Female => "Weiblich",
+        Gender.Other => "Andere",
+        _ => "Unbekannt"
+    };
+
+    enum Gender
+    {
+        Male,
+        Female,
+        Other
+    }
+
+    private class Model
+    {
+        public string ArtistName { get; set; } = "Max Mustermann";
+        public string FirstName { get; set; } = "Max";
+        public string LastName { get; set; } = "Mustermann";
+        public Gender Gender { get; set; } = Gender.Male;
+        public string City { get; set; } = "Zürich";
+        public string Roles { get; set; } = "Sänger, Songwriter";
+        public string Genre { get; set; } = "Pop, Indie";
+
+        // Liste von Profilbildern für das Carousel
+        public List<string> ProfileImages { get; set; } = new()
+        {
+            "https://via.placeholder.com/150/0000FF/FFFFFF",
+            "https://via.placeholder.com/150/FF0000/FFFFFF",
+            "https://via.placeholder.com/150/00FF00/FFFFFF"
+        };
+    }
+}
