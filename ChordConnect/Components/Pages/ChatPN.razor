@@ -1,0 +1,115 @@
+﻿@page "/chatpn"
+
+@using MudBlazor
+@inject ISnackbar Snackbar
+
+<style>
+    .chat-container {
+        height: 80vh;
+        overflow-y: scroll;
+        padding: 10px;
+        background-color: #2A2A2A;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .chat-message {
+        padding: 8px;
+        border-radius: 12px;
+        color: #FFE9D6;
+        max-width: 70%;
+        word-wrap: break-word;
+    }
+
+        /* Nachrichten des Partners (links) */
+        .chat-message.partner {
+            background-color: #3A3A3A;
+            align-self: flex-start; /* Links ausrichten */
+        }
+
+        /* Eigene Nachrichten (rechts) */
+        .chat-message.self {
+            background-color: #D8A7B1;
+            align-self: flex-end; /* Rechts ausrichten */
+        }
+
+    .chat-input {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+        .chat-input textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 12px;
+            background-color: #3A3A3A;
+            color: #FFE9D6;
+            border: none;
+        }
+
+        .chat-input button {
+            background-color: #D8A7B1;
+            color: #1E1E1E;
+            border-radius: 12px;
+            padding: 10px 20px;
+            border: none;
+        }
+</style>
+
+<div class="chat-container">
+    <MudText Typo="Typo.h5" Align="Align.Center" Style="color: #FFE9D6; margin-bottom: 20px;">
+        Dein Chat
+    </MudText>
+
+    <!-- Chatnachrichten anzeigen -->
+    @foreach (var message in messages)
+    {
+        <div class="chat-message @(message.IsSelf ? "self" : "partner")">
+            <strong>@message.Sender:</strong> @message.Content
+        </div>
+    }
+</div>
+
+<div class="chat-input">
+    <MudTextField @bind-Value="newMessage" Placeholder="Nachricht eingeben..." Lines="4" />
+    <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="SendMessage">Senden</MudButton>
+</div>
+
+@code {
+    private string newMessage;
+    private List<ChatMessage> messages = new List<ChatMessage>
+    {
+        new ChatMessage { Sender = "Max", Content = "Hallo, wie geht's?", IsSelf = false },
+        new ChatMessage { Sender = "Lisa", Content = "Mir geht's gut, und dir?", IsSelf = false },
+    };
+
+    public class ChatMessage
+    {
+        public string Sender { get; set; }
+        public string Content { get; set; }
+        public bool IsSelf { get; set; } // True, wenn die Nachricht vom Benutzer selbst ist
+    }
+
+    private void SendMessage()
+    {
+        if (!string.IsNullOrEmpty(newMessage))
+        {
+            // Füge die eigene Nachricht hinzu
+            messages.Add(new ChatMessage
+                {
+                    Sender = "Du",
+                    Content = newMessage,
+                    IsSelf = true
+                });
+
+            // Nachricht anzeigen und Eingabefeld zurücksetzen
+            newMessage = string.Empty;
+
+            // Snackbar nach dem Senden anzeigen
+            Snackbar.Add("Nachricht gesendet!", MudBlazor.Severity.Success);
+        }
+    }
+}

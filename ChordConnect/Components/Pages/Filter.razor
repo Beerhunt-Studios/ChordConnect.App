@@ -1,0 +1,110 @@
+﻿@page "/filter"
+@inject NavigationManager NavManager
+
+<style>
+    .filter-container {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        background-color: #FFE9D6;
+        color: #2A2A2A;
+        border-radius: 12px;
+        gap: 15px;
+    }
+
+        .filter-container select, .filter-container input {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 1px solid #2A2A2A;
+        }
+
+        .filter-container button {
+            background-color: #2A2A2A;
+            color: #FFE9D6;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .filter-container button:hover {
+                background-color: #F8C1D4;
+            }
+
+    .back-button {
+        background-color: #F8C1D4;
+        color: #2A2A2A;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 15px;
+        transition: background-color 0.3s;
+    }
+
+        .back-button:hover {
+            background-color: #2A2A2A;
+            color: #FFE9D6;
+        }
+</style>
+
+<div class="filter-container">
+    <button class="back-button" @onclick="GoBack">Zurück</button>
+    <h3>Filter Einstellungen</h3>
+
+    <label for="genre">Genre:</label>
+    <select id="genre" @bind="selectedGenre">
+        <option value="">Alle</option>
+        <option value="Pop">Pop</option>
+        <option value="Rock">Rock</option>
+        <option value="Indie">Indie</option>
+        <option value="Jazz">Jazz</option>
+    </select>
+
+    <label for="role">Rolle:</label>
+    <select id="role" @bind="selectedRole">
+        <option value="">Alle</option>
+        <option value="Sängerin">Sängerin</option>
+        <option value="Gitarrist">Gitarrist</option>
+        <option value="Schlagzeuger">Schlagzeuger</option>
+    </select>
+
+    <label for="gender">Geschlecht:</label>
+    <select id="gender" @bind="selectedGender">
+        <option value="">Alle</option>
+        <option value="weiblich">Weiblich</option>
+        <option value="männlich">Männlich</option>
+    </select>
+
+    <label for="distance">Maximale Entfernung (km):</label>
+    <input type="number" id="distance" @bind="maxDistance" min="0" />
+
+    <label for="age">Alter (Min-Max):</label>
+    <input type="number" id="minAge" @bind="minAge" min="0" placeholder="Min Alter" />
+    <input type="number" id="maxAge" @bind="maxAge" min="0" placeholder="Max Alter" />
+
+    <button @onclick="ApplyFilter">Filter anwenden</button>
+</div>
+
+@code {
+    private string selectedGenre = "";
+    private string selectedRole = "";
+    private string selectedGender = "";
+    private int maxDistance = 100;
+    private int minAge = 18;
+    private int maxAge = 100;
+
+    private void ApplyFilter()
+    {
+        // Hier kannst du die Logik einfügen, um die Filter auf die Profile anzuwenden.
+        // Ich nehme an, du möchtest die gefilterten Daten zurück an die Hauptseite weitergeben.
+        NavManager.NavigateTo("/swipe"); // Zurück zur Swipe-Seite nach der Filteranwendung
+    }
+
+    private void GoBack()
+    {
+        NavManager.NavigateTo("/swipe"); // Zurück zur Swipe-Seite ohne Filteranwendung
+    }
+}

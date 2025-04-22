@@ -1,0 +1,145 @@
+﻿@page "/settings"
+@inject NavigationManager NavManager
+
+<style>
+    .settings-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 20px;
+        background-color: #2A2A2A;
+        color: #FFE9D6;
+        height: 100vh;
+    }
+
+    .settings-header {
+        font-size: 2rem;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .form-group label {
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #D8A7B1;
+        background-color: #1E1E1E;
+        color: #FFE9D6;
+        font-size: 1rem;
+    }
+
+    .form-group button {
+        background-color: #D8A7B1;
+        color: #1E1E1E;
+        border-radius: 12px;
+        padding: 12px 20px;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 100%;
+        max-width: 200px;
+    }
+
+    .form-group button:hover {
+        background-color: #F8C1D4;
+    }
+
+    .cancel-btn {
+        background-color: #B1B1B1;
+    }
+
+    .cancel-btn:hover {
+        background-color: #D8D8D8;
+    }
+
+    .switch-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .switch-container label {
+        font-size: 1rem;
+    }
+</style>
+
+<div class="settings-container">
+    <div class="settings-header">Einstellungen</div>
+
+    <div class="form-group">
+        <label for="darkMode">Dark Mode</label>
+        <div class="switch-container">
+            <label for="darkMode">Aktivieren</label>
+            <input type="checkbox" id="darkMode" @bind="settings.DarkMode" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="notifications">Benachrichtigungen</label>
+        <div class="switch-container">
+            <label for="notifications">Aktivieren</label>
+            <input type="checkbox" id="notifications" @bind="settings.Notifications" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="changePassword">Passwort ändern</label>
+        <input type="password" id="changePassword" @bind="settings.NewPassword" placeholder="Neues Passwort" />
+    </div>
+
+    <div class="form-group">
+        <button @onclick="SaveSettings">Speichern</button>
+    </div>
+
+    <div class="form-group">
+        <button class="cancel-btn" @onclick="CancelChanges">Abbrechen</button>
+    </div>
+</div>
+
+@code {
+    private UserSettings settings = new UserSettings
+        {
+            DarkMode = false,
+            Notifications = true,
+            NewPassword = string.Empty
+        };
+
+    private void SaveSettings()
+    {
+        // Speichern der Benutzereinstellungen (z.B. in einer Datenbank oder API)
+        // Hier kannst du die Logik zum Speichern implementieren
+
+        // Zum Beispiel:
+        // SaveDarkMode(settings.DarkMode);
+        // SaveNotifications(settings.Notifications);
+        // SaveNewPassword(settings.NewPassword);
+
+        NavManager.NavigateTo("/profile"); // Weiterleitung nach dem Speichern
+    }
+
+    private void CancelChanges()
+    {
+        // Änderungen verwerfen und zurück zur Profilseite
+        NavManager.NavigateTo("/profile");
+    }
+
+    public class UserSettings
+    {
+        public bool DarkMode { get; set; }
+        public bool Notifications { get; set; }
+        public string NewPassword { get; set; }
+    }
+}

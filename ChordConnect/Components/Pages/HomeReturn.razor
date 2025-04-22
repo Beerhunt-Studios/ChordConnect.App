@@ -1,0 +1,110 @@
+﻿@page "/homereturn" 
+
+@using MudBlazor
+@inject NavigationManager NavManager
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@@400;500;600&family=Quicksand:wght@@400;500;600&display=swap');
+
+    * {
+        font-family: 'Quicksand', 'Inter', sans-serif;
+    }
+
+    .nav-button {
+        transition: transform 0.1s ease-in-out, box-shadow 0.2s;
+        border-radius: 12px;
+        padding: 16px;
+        width: 100%;
+        background-color: #D8A7B1;
+        color: #1E1E1E;
+        font-weight: 600;
+    }
+
+    .nav-button:active {
+        transform: scale(0.97);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) inset;
+    }
+
+    .home-container {
+        max-width: 400px;
+        margin: 80px auto;
+        text-align: center;
+    }
+
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .custom-appbar-container {
+        max-width: 400px;
+        margin: 30px auto 20px auto;
+    }
+
+    .custom-appbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        background-color: #2A2A2A;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .title-text {
+        flex-grow: 1;
+        text-align: center;
+        font-weight: 700;
+        color: #FFE9D6;
+        font-size: 1.25rem;
+    }
+</style>
+
+<!-- Floating AppBar -->
+<div class="custom-appbar-container">
+    <div class="custom-appbar">
+        <!-- Benachrichtigungen -->
+        <MudBadge Color="Color.Error" Content="3">
+            <MudIconButton Icon="@Icons.Material.Filled.Notifications" OnClick="ShowNotifications" Color="Color.Inherit" />
+        </MudBadge>
+
+        <!-- Titel -->
+        <div class="title-text">ChordConnect</div>
+
+        <!-- Profilbild -->
+        <MudAvatar Size="Size.Medium" Image="https://via.placeholder.com/40" Alt="Profilbild" Style="cursor: pointer;" OnClick="OpenProfile" />
+    </div>
+</div>
+
+<!-- Hauptinhalt -->
+<MudPaper Class="home-container pa-6 rounded-xl" Style="background-color: #2A2A2A; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
+    <MudText Typo="Typo.h4" Class="mb-6" Style="color: #FFE9D6;">
+        Willkommen zurück!
+    </MudText>
+
+    <div class="button-group">
+        <MudButton Class="nav-button" OnClick="@(() => NavigateTo("/swipe"))">Swipen</MudButton>
+        <MudButton Class="nav-button" OnClick="@(() => NavigateTo("/chats"))">Chats</MudButton>
+        <MudButton Class="nav-button" OnClick="@(() => NavigateTo("/matches"))">Matches</MudButton>
+        <MudButton Class="nav-button" OnClick="@(() => NavigateTo("/profile"))">Profil</MudButton>
+        <MudButton Class="nav-button" OnClick="@(() => NavigateTo("/settings"))">Einstellungen</MudButton>
+    </div>
+</MudPaper>
+
+@code {
+    private void NavigateTo(string url)
+    {
+        NavManager.NavigateTo(url);
+    }
+
+    private void ShowNotifications()
+    {
+        Console.WriteLine("Benachrichtigungen geöffnet");
+    }
+
+    private void OpenProfile()
+    {
+        NavManager.NavigateTo("/profile");
+    }
+}

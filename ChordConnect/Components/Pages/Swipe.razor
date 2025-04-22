@@ -1,0 +1,231 @@
+﻿@page "/swipe"
+@inject NavigationManager NavManager
+
+<style>
+    .swipe-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+        background-color: #2A2A2A;
+        color: #FFE9D6;
+        position: relative;
+    }
+
+    .profile-card {
+        width: 320px;
+        height: auto;
+        background-color: #D8A7B1;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        position: absolute;
+        transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+
+    .profile-card img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 15px;
+        border: 4px solid #FFE9D6;
+    }
+
+    .info-card {
+        background-color: #FFE9D6;
+        color: #2A2A2A;
+        width: 100%;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .info-card h2 {
+        margin: 0 0 10px;
+        font-size: 1.4rem;
+    }
+
+    .badges {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+    }
+
+    .badge {
+		backgro display: flex;
+        justify-content: center; /* X und Herz in der Mitte */
+        gap: 30px;
+        margin-top: 20px;
+        width: 100%;
+    }
+
+    .action-button {
+        background-color: #1E1E1E;
+        color: #FFE9D6;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .action-button:hover {
+        background-color: #F8C1D4;
+    }
+
+    .action-button:focus {
+        outline: none;
+    }
+
+    .back-button {
+        position: absolute;
+        left: 20px;  /* Zurück-Button nach links verschieben */
+        background-color: #1E1E1E;
+        color: #FFE9D6;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .back-button:hover {
+        background-color: #F8C1D4;
+    }
+
+    .filter-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background-color: #1E1E1E;
+        color: #FFE9D6;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .filter-button:hover {
+        background-color: #F8C1D4;
+    }
+</style>
+
+<div class="swipe-container">
+    @if (currentProfile != null)
+    {
+            <div class="profile-card" style="@profileCardStyle">
+                <img src="@currentProfile.Image" alt="Profile Image" />
+
+                <div class="info-card">
+                    <h2>@currentProfile.Name, @currentProfile.Age</h2>
+                    <div class="badges">
+                        <span class="badge">@currentProfile.Genre</span>
+                        <span class="badge">@currentProfile.Role</span>
+                    </div>
+                    <p class="location"><span class="location-icon">📍</span>@currentProfile.Location</p>
+                </div>
+            </div>
+    }
+    else
+    {
+            <div>Keine weiteren Profile</div>
+    }
+</div>
+
+<!-- Zurück-Button links -->
+<button class="back-button" @onclick="UndoSwipe">↩️</button>
+
+<!-- X und Herz in der Mitte -->
+<div class="swipe-actions">
+    <button class="action-button" @onclick="SwipeLeft">❌</button>
+    <button class="action-button" @onclick="SwipeRight">❤️</button>
+</div>
+
+<!-- Filter-Button -->
+<button class="filter-button" @onclick="ToggleFilter">🔍</button>
+
+@code {
+    private List<Profile> profiles = new List<Profile>
+    {
+        new Profile { Name = "Alice", Image = "https://placekitten.com/300/300", Genre = "Pop", Role = "Sängerin", Age = 25, Location = "Berlin" },
+        new Profile { Name = "Bob", Image = "https://placekitten.com/301/301", Genre = "Rock", Role = "Gitarrist", Age = 28, Location = "Hamburg" },
+        new Profile { Name = "Charlie", Image = "https://placekitten.com/302/302", Genre = "Jazz", Role = "Schlagzeuger", Age = 30, Location = "München" }
+    };
+
+    private Profile currentProfile;
+    private string profileCardStyle = "transform: translateX(0px)";
+    private Profile lastSwipedProfile;
+    private bool isFilterActive = false;
+
+    protected override void OnInitialized()
+    {
+        currentProfile = profiles.Count > 0 ? profiles[0] : null;
+    }
+
+    private void SwipeLeft()
+    {
+        if (profiles.Count > 0)
+        {
+            lastSwipedProfile = currentProfile;  // Speichert das Profil, das gerade geswiped wurde
+            profiles.RemoveAt(0);
+            currentProfile = profiles.Count > 0 ? profiles[0] : null;
+            profileCardStyle = "transform: translateX(-100%)";
+            StateHasChanged();
+        }
+    }
+
+    private void SwipeRight()
+    {
+        if (profiles.Count > 0)
+        {
+            lastSwipedProfile = currentProfile;  // Speichert das Profil, das gerade geswiped wurde
+            profiles.RemoveAt(0);
+            currentProfile = profiles.Count > 0 ? profiles[0] : null;
+            profileCardStyle = "transform: translateX(100%)";
+            StateHasChanged();
+        }
+    }
+
+    private void UndoSwipe()
+    {
+        if (lastSwipedProfile != null)
+        {
+            profiles.Insert(0, lastSwipedProfile);  // Das zuletzt geswipte Profil wieder an den Anfang der Liste setzen
+            currentProfile = lastSwipedProfile;
+            profileCardStyle = "transform: translateX(0px)";
+            lastSwipedProfile = null;  // Nach dem Rückgängig machen zurücksetzen
+            StateHasChanged();
+        }
+    }
+
+    private void ToggleFilter()
+    {
+        isFilterActive = !isFilterActive;
+        // Hier kannst du eine Logik für den Filter einbauen, falls gewünscht
+        // Für den Moment kannst du es so belassen, um zu sehen, wie der Button funktioniert
+        Console.WriteLine("Filter Toggle: " + (isFilterActive ? "Aktiviert" : "Deaktiviert"));
+    }
+
+    private class Profile
+    {
+        public string Name { get; set; }
+        public string Image { get; set; }
+        public string Genre { get; set; }
+        public string Role { get; set; }
+        public int Age { get; set; }
+        public string Location { get; set; }
+    }
+}

@@ -1,20 +1,87 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<div class="flex h-full w-full flex-col content-center items-center justify-center">
-    <div class="text-center text-4xl font-bold">
-        🎵 ChordConnect 🎵
-    </div>
-    <div class="pt-3">
-        Willkommen bei Chord-Connect. Der Plattform bei der du dich mit anderen Künstlern verbinden kannst!
-    </div>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Roboto', sans-serif;
+    }
 
-    <button class="outline-1 p-2" @onclick="Login">
-        Login
-    </button>
+    .intro-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #2A2A2A;
+        color: #FFE9D6;
+        text-align: center;
+        padding: 20px;
+        position: relative;
+    }
+
+    /* ChordConnect ganz oben */
+    .intro-container h1 {
+        font-size: 2rem; /* etwas kleinere Schriftgröße */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        margin-top: 20px;
+        position: absolute;
+        top: 20px;
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Text unterhalb */
+    .intro-container p {
+        font-size: 1.2rem;
+        margin-top: 100px; /* Abstand zum ChordConnect-Schriftzug */
+        margin-bottom: 30px;
+        max-width: 600px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .action-buttons button {
+        background-color: #D8A7B1;
+        color: #1E1E1E;
+        border-radius: 12px;
+        padding: 15px 25px;
+        border: none;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .action-buttons button:hover {
+        background-color: #F8C1D4;
+    }
+
+    .action-buttons button:focus {
+        outline: none;
+    }
+</style>
+
+<div class="intro-container">
+    <h1>
+        <span style="font-size: 1.5rem;">🎵</span> <!-- kleinere Größe für die Symbole -->
+        ChordConnect
+        <span style="font-size: 1.5rem;">🎵</span>
+    </h1>
+    <p>Willkommen bei ChordConnect! Die Plattform, bei der du dich mit anderen Künstlern verbinden kannst.</p>
+
+    <div class="action-buttons">
+        <button @onclick="Login">Einloggen</button>
+    </div>
 </div>
 
 @code {
-
     public async Task Login()
     {
         await ((Auth0AuthenticationStateProvider)AuthenticationStateProvider)

@@ -5,7 +5,6 @@
 @inject IJSRuntime JS
 
 <style>
-    /* CSS-Import innerhalb des Style-Tags */
     @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@@400;500;600&family=Quicksand:wght@@400;500;600&display=swap');
 
     * {
@@ -42,7 +41,6 @@
 <MudPaper Class="pa-6 rounded-xl mx-auto mt-10" Style="max-width: 600px; background-color: #2A2A2A; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);">
     <MudCard Class="rounded-2xl" Style="background-color: #2A2A2A; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
         <MudCardHeader>
-            <!-- Carousel für Profilbilder -->
             <MudCarousel Class="mud-width-full" @ref="_carousel" ItemsSource="@model.ProfileImages" @bind-SelectedIndex="selectedIndex" Style="height:200px;" ShowArrows="@_arrows" ShowBullets="@_bullets" EnableSwipeGesture="@_enableSwipeGesture" AutoCycle="@_autocycle">
             </MudCarousel>
         </MudCardHeader>
@@ -52,23 +50,19 @@
                 @model.ArtistName
             </MudText>
 
-            <!-- Vorname & Nachname nebeneinander -->
             <div style="display: flex; gap: 1rem; margin-top: 1rem;">
                 <MudText Typo="Typo.body1" Style="color: #FFE9D6;">@model.FirstName</MudText>
                 <MudText Typo="Typo.body1" Style="color: #FFE9D6;">@model.LastName</MudText>
             </div>
 
-            <!-- Geschlecht in kleinerer Schriftgröße und grau -->
             <MudText Typo="Typo.body2" Style="color: #B0B0B0; margin-top: 0.5rem;">
                 @GetGenderText(model.Gender)
             </MudText>
 
-            <!-- Ort in originaler Schriftfarbe -->
             <MudText Typo="Typo.body1" Style="color: #FFE9D6;">
                 @model.City
             </MudText>
 
-            <!-- Rollen als Chips -->
             <div style="margin-top: 1rem;">
                 <MudText Typo="Typo.body1" Style="font-weight: bold; color: #FFE9D6;">
                     Rollen:
@@ -81,7 +75,6 @@
                 }
             </div>
 
-            <!-- Genre als Chips -->
             <div style="margin-top: 1rem;">
                 <MudText Typo="Typo.body1" Style="font-weight: bold; color: #FFE9D6;">
                     Genre:
@@ -92,6 +85,35 @@
                         @genre.Trim()
                         </MudChip>
                 }
+            </div>
+
+            <!-- Audio Player -->
+            <MudText Typo="Typo.h6" Style="margin-top: 2rem; color: #FFE9D6;">Audio</MudText>
+            <audio controls style="width: 100%; border-radius: 8px;">
+                <source src="@model.AudioUrl" type="audio/mpeg">
+                Dein Browser unterstützt kein Audio.
+            </audio>
+
+            <!-- Spotify/SoundCloud Embed -->
+            <MudText Typo="Typo.h6" Style="margin-top: 2rem; color: #FFE9D6;">Spotify / SoundCloud</MudText>
+            <iframe style="border-radius:12px"
+                    src="@model.SpotifyEmbedUrl"
+                    width="100%" height="80"
+                    frameborder="0"
+                    allowfullscreen=""
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy">
+            </iframe>
+
+            <!-- Video Embed -->
+            <MudText Typo="Typo.h6" Style="margin-top: 2rem; color: #FFE9D6;">Video</MudText>
+            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px;">
+            <iframe src="@model.VideoUrl"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+            </iframe>
             </div>
         </MudCardContent>
 
@@ -144,12 +166,15 @@
         public string Roles { get; set; } = "Sänger, Songwriter";
         public string Genre { get; set; } = "Pop, Indie";
 
-        // Liste von Profilbildern für das Carousel
         public List<string> ProfileImages { get; set; } = new()
         {
             "https://via.placeholder.com/150/0000FF/FFFFFF",
             "https://via.placeholder.com/150/FF0000/FFFFFF",
             "https://via.placeholder.com/150/00FF00/FFFFFF"
         };
+
+        public string AudioUrl { get; set; } = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+        public string SpotifyEmbedUrl { get; set; } = "https://open.spotify.com/embed/track/7ouMYWpwJ422jRcDASZB7P?utm_source=generator";
+        public string VideoUrl { get; set; } = "https://www.youtube.com/embed/dQw4w9WgXcQ";
     }
 }
